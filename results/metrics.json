@@ -6,7 +6,7 @@
         "F1 Score": 0.8363636363636363,
         "ROC AUC": 0.9242424242424243,
         "Cross Validation": 0.8426020408163266,
-        "Training Time": 0.03110671043395996
+        "Training Time": 0.031888484954833984
     },
     "Decision Tree": {
         "Accuracy": 0.7213114754098361,
@@ -15,7 +15,7 @@
         "F1 Score": 0.6792452830188679,
         "ROC AUC": 0.7153679653679653,
         "Cross Validation": 0.7644557823129252,
-        "Training Time": 0.02435898780822754
+        "Training Time": 0.02476668357849121
     },
     "Random Forest": {
         "Accuracy": 0.8360655737704918,
@@ -24,7 +24,7 @@
         "F1 Score": 0.8076923076923077,
         "ROC AUC": 0.920995670995671,
         "Cross Validation": 0.8181122448979592,
-        "Training Time": 1.348494291305542
+        "Training Time": 1.4098396301269531
     },
     "XGBoost": {
         "Accuracy": 0.8360655737704918,
@@ -33,6 +33,6 @@
         "F1 Score": 0.8148148148148148,
         "ROC AUC": 0.8874458874458874,
         "Cross Validation": 0.8058673469387754,
-        "Training Time": 0.570824146270752
+        "Training Time": 0.5444047451019287
     }
 }

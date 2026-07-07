@@ -5,8 +5,11 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import History from './pages/History';
+import Analytics from './pages/Analytics';
+import Settings from './pages/Settings';
 import NeuralBackground from './components/NeuralBackground';
 import Navigation from './components/Navigation';
+
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -58,6 +61,27 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/analytics"
+                element={
+                  <ProtectedRoute>
+                    <div className="flex-grow flex items-center justify-center p-4">
+                      <Analytics />
+                    </div>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <div className="flex-grow flex items-center justify-center p-4">
+                      <Settings />
+                    </div>
+                  </ProtectedRoute>
+                }
+              />
+
 
               {/* Fallback */}
               <Route path="*" element={<Navigate to="/" replace />} />

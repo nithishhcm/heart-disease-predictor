@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Activity, LogOut, LayoutDashboard, History, Home } from 'lucide-react';
+import { Activity, LogOut, LayoutDashboard, History, Home, BarChart2, Settings } from 'lucide-react';
+
 
 const Navigation = () => {
   const navigate  = useNavigate();
@@ -77,6 +78,21 @@ const Navigation = () => {
           <History size={18} />
           <span className="text-sm">History</span>
         </Link>
+        <Link
+          to="/analytics"
+          className={`flex items-center gap-2 transition-colors ${isActive('/analytics') ? 'neon-text-primary' : 'text-gray-400 hover:text-white'}`}
+        >
+          <BarChart2 size={18} />
+          <span className="text-sm">Analytics</span>
+        </Link>
+        <Link
+          to="/settings"
+          className={`flex items-center gap-2 transition-colors ${isActive('/settings') ? 'neon-text-primary' : 'text-gray-400 hover:text-white'}`}
+        >
+          <Settings size={18} />
+          <span className="text-sm">Settings</span>
+        </Link>
+
         <button
           onClick={handleLogout}
           className="flex items-center gap-2 text-gray-400 hover:text-red-400 transition-colors ml-4 text-sm"

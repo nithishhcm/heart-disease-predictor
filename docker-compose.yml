@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # 1. Database Service
+  db:
+    image: postgres:15-alpine
+    container_name: neuroheart_db
+    restart: always
+    environment:
+      POSTGRES_DB: neuroheart_db
+      POSTGRES_USER: neuroheart_admin
+      POSTGRES_PASSWORD: neuroheart_secure_password_99
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U neuroheart_admin -d neuroheart_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. FastAPI Application Service
+  web:
+    build: .
+    container_name: neuroheart_api
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://neuroheart_admin:neuroheart_secure_password_99@db:5432/neuroheart_db
+      - SECRET_KEY=supersecretkey_for_medical_ai_app_in_production_change_this
+      - REFRESH_SECRET_KEY=superrefreshsecretkey_for_medical_ai_app_change_this
+      - ENVIRONMENT=production
+      - ACCESS_TOKEN_EXPIRE_MINUTES=60
+      - REFRESH_TOKEN_EXPIRE_DAYS=7
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

@@ -1,102 +1,93 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
-from datetime import timedelta
-from typing import List
+from app.core.config import settings
+from app.core.database import engine, Base, run_sqlite_migrations
+from app.core.logging import api_logger, log_event
+from app.routers import auth, prediction, analytics, health
+import time
 
-from app.schemas import PatientData, UserCreate, UserResponse, Token, PredictionResponse, PredictionResponseV2, PredictionHistory
-from app.predictor import predict
-from app.explainer import explain
-from app.response_builder import build_full_response
-from app.database import engine, get_db, Base
-from app.models import User, PredictionRecord
-from app.auth import get_password_hash, verify_password, create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
-
-# Create database tables
+# Create database tables automatically
+# Note: For SQLite, this creates medical_ai.db. For PostgreSQL, it initializes schemas in target tables.
 Base.metadata.create_all(bind=engine)
+run_sqlite_migrations()
 
-app = FastAPI()
 
-# CORS configuration
-# NOTE: allow_credentials=True is incompatible with allow_origins=["*"] (CORS spec).
-# We use JWT Bearer tokens, not cookies, so credentials=False is correct.
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    version=settings.API_VERSION,
+    description="NeuroHeart AI - Commercial clinical-grade cardiovascular risk telemetry and explanation dashboard.",
+    docs_url="/docs",
+    redoc_url="/redoc"
+)
+
+# CORS Configuration
+# In production, specify explicit domains using environment settings
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Custom Middleware for Security Headers & Request Audits
+@app.middleware("http")
+async def add_security_headers_and_log(request: Request, call_next):
+    start_time = time.time()
+    
+    # Run request
+    response = await call_next(request)
+    
+    duration = time.time() - start_time
+    
+    # 1. Inject Security Headers
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+        "font-src 'self' https://fonts.gstatic.com; "
+        "img-src 'self' data: blob:; "
+        "connect-src 'self' *;"
+    )
+    
+    # 2. Log API Transaction
+    client_ip = request.client.host if request.client else "unknown"
+    log_event(
+        api_logger,
+        f"{request.method} {request.url.path} responded {response.status_code} in {duration:.4f}s",
+        extra={
+            "ip": client_ip,
+            "method": request.method,
+            "path": request.url.path,
+            "status_code": response.status_code,
+            "duration": duration
+        }
+    )
+    
+    return response
+
+# Register API Routers under Root for legacy compatibility (matching existing UI paths)
+app.include_router(auth.router)
+app.include_router(prediction.router)
+app.include_router(analytics.router)
+app.include_router(health.router)
+
 @app.get("/")
 def home():
-    return {"message": "Heart Disease API running securely"}
+    return {
+        "status": "Healthy",
+        "message": "NeuroHeart AI Cardiovascular Inference Engine running securely.",
+        "version": settings.API_VERSION
+    }
 
-@app.post("/register", response_model=UserResponse)
-def register_user(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.username == user.username).first()
-    if db_user:
-        raise HTTPException(status_code=400, detail="Username already registered")
-    
-    db_email = db.query(User).filter(User.email == user.email).first()
-    if db_email:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    
-    hashed_password = get_password_hash(user.password)
-    new_user = User(username=user.username, email=user.email, hashed_password=hashed_password)
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return new_user
-
-@app.post("/login", response_model=Token)
-def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.username == form_data.username).first()
-    if not user or not verify_password(form_data.password, user.hashed_password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
-
-@app.post("/predict", response_model=PredictionResponseV2)
-def predict_api(data: PatientData, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    data_dict = data.dict()
-
-    pred, prob, scaled = predict(data_dict)
-
-    explanation = explain(
-        scaled_input=scaled,
-        feature_names=list(data_dict.keys())
-    )
-    
-    # Save to database (save raw for history to save space)
-    prediction_record = PredictionRecord(
-        user_id=current_user.id,
-        input_data=data_dict,
-        prediction=int(pred),
-        probability=float(prob),
-        explanation=explanation
-    )
-    db.add(prediction_record)
-    db.commit()
-    db.refresh(prediction_record)
-
-    # Build and return the human-readable V2 response
-    return build_full_response(
-        prediction=int(pred),
-        probability=float(prob),
-        input_data=data_dict,
-        shap_dict=explanation
-    )
-
-@app.get("/history", response_model=List[PredictionHistory])
-def get_user_history(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    history = db.query(PredictionRecord).filter(PredictionRecord.user_id == current_user.id).order_by(PredictionRecord.timestamp.desc()).all()
-    return history
+# Print registered routes for debug tracing
+print("\n========== REGISTERED ROUTES ==========")
+for route in app.routes:
+    if hasattr(route, "methods") and hasattr(route, "path"):
+        methods = ",".join(route.methods or [])
+        print(f"{methods:20} {route.path}")
+print("=======================================\n")
