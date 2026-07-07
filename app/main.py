@@ -21,11 +21,24 @@ app = FastAPI(
 )
 
 # CORS Configuration
-# In production, specify explicit domains using environment settings
+# Explicit production origins + localhost for development
+cors_origins = [
+    "https://heart-disease-predictor-vert-six.vercel.app",
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:3000",
+]
+# Allow additional origins from environment (comma-separated)
+import os
+extra_origins = os.getenv("CORS_ORIGINS_EXTRA", "")
+if extra_origins:
+    cors_origins.extend([o.strip() for o in extra_origins.split(",") if o.strip()])
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
-    allow_credentials=False,
+    allow_origins=cors_origins,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )

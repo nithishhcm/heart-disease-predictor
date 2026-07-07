@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Activity, Lock, User as UserIcon } from 'lucide-react';
-import axios from 'axios';
-
-const API_URL = 'http://127.0.0.1:8000';
+import api from '../utils/api';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -22,7 +20,7 @@ const Login = () => {
       loginData.append('username', formData.username);
       loginData.append('password', formData.password);
       
-      const res = await axios.post(`${API_URL}/login`, loginData);
+      const res = await api.post('/login', loginData);
       localStorage.setItem('token', res.data.access_token);
       navigate('/dashboard');
     } catch (err) {

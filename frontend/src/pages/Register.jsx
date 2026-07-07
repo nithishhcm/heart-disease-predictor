@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Activity, Mail, Lock, User as UserIcon, AlertCircle, CheckCircle } from 'lucide-react';
-import axios from 'axios';
-
-const API_URL = 'http://127.0.0.1:8000';
+import api from '../utils/api';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -36,7 +34,7 @@ const Register = () => {
 
     try {
       // Step 1: Register
-      await axios.post(`${API_URL}/register`, {
+      await api.post('/register', {
         username: formData.username.trim(),
         email:    formData.email.trim(),
         password: formData.password,
@@ -49,14 +47,14 @@ const Register = () => {
       loginData.append('username', formData.username.trim());
       loginData.append('password', formData.password);
 
-      const res = await axios.post(`${API_URL}/login`, loginData);
+      const res = await api.post('/login', loginData);
       localStorage.setItem('token', res.data.access_token);
       navigate('/dashboard');
 
     } catch (err) {
       // No response at all = server not running
       if (!err.response) {
-        setError('Cannot reach the server. Make sure the backend is running on port 8000.');
+        setError('Cannot reach the server. Please try again later.');
         setLoading(false);
         return;
       }
