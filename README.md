@@ -1,66 +1,435 @@
-# NeuroHeart AI — Clinical Cardiovascular SaaS Platform
+# 🫀 NeuroHeart AI
+## AI-Powered Cardiovascular Risk Prediction & Clinical Intelligence Platform
 
-**NeuroHeart AI** is a production-quality, high-performance cardiovascular diagnostics and telemetry platform. It integrates a logistic regression machine learning model with SHAP (SHapley Additive exPlanations) coefficients, structured SQL schemas, role audits, automated PDF reporting, and a glowing glassmorphism React interface.
-
----
-
-## Technical Highlights
-
-- **Enterprise Refactoring**: Isolated layers separating HTTP routes, database handlers, repository patterns, and clinical processing services.
-- **Dual Database Core**: Automatic connection pooling and PostgreSQL detection (via `DATABASE_URL` bindings) with seamless SQLite local developer fallback.
-- **Clinical Explanations**: Refines complex mathematical SHAP factors into human-readable patient diagnostics, risk drivers, and physician summaries.
-- **Automated Medical Reporting**: Compiles medical records into hospital-quality printable PDFs containing gauges, factor plots, doctor signing sheets, and security verification QR codes.
-- **Wizard Compilation Form**: A responsive multi-step client wizard that validates inputs, details clinical ranges, and explains metrics.
-- **Custom React SVGs**: Native HSL-themed gauges, timelines, and radars built without legacy libraries, guaranteeing React 19 compatibility.
+![NeuroHeart AI](https://img.shields.io/badge/AI-Healthcare-blue)
+![Python](https://img.shields.io/badge/Python-3.x-yellow)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green)
+![React](https://img.shields.io/badge/React-Frontend-blue)
+![Machine Learning](https://img.shields.io/badge/Machine-Learning-orange)
 
 ---
 
-## 1. Quick Start Guide
+## 🌐 Live Application
 
-### Prerequisites
-- Python 3.11+
-- Node.js 18+
-- Docker & Docker Compose (for staging container runs)
+🚀 **Frontend (Production):**
 
-### Local Server Setup
-1. Clone the project and navigate to the backend workspace.
-2. Install pip libraries:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Run the backend server:
-   ```bash
-   uvicorn app.main:app --reload --port 8000
-   ```
-   Access API documentation at `http://127.0.0.1:8000/docs`.
+https://heart-disease-predictor-nithishh.vercel.app
 
-### Local Client Setup
-1. Navigate to the `frontend/` directory.
-2. Install NPM dependencies:
-   ```bash
-   npm install
-   ```
-3. Boot the Vite React server:
-   ```bash
-   npm run dev
-   ```
-   Open `http://localhost:5173` to explore the dashboard.
+⚙️ **Backend API:**
+
+https://heart-disease-predictor-mwgp.onrender.com
+
+📚 **API Documentation:**
+
+https://heart-disease-predictor-mwgp.onrender.com/docs
 
 ---
 
-## 2. Docker Architecture Run
+# 📌 Overview
 
-To spin up the stagings environment with both the PostgreSQL database container and the FastAPI server, run:
-```bash
-docker-compose up --build
+**NeuroHeart AI** is a full-stack artificial intelligence healthcare platform designed to predict cardiovascular disease risk and provide meaningful clinical explanations through an interactive dashboard.
+
+The system combines:
+
+- Machine Learning prediction models
+- FastAPI backend services
+- React-based user interface
+- Secure authentication
+- Automated medical report generation
+
+The goal of NeuroHeart AI is to demonstrate how AI can assist healthcare professionals and users by transforming cardiovascular health data into understandable risk insights.
+
+---
+
+# ✨ Key Features
+
+## 🔐 Secure User Authentication
+
+- User registration and login system
+- JWT-based authentication
+- Secure token management
+- User-specific prediction history
+- Protected API endpoints
+
+
+## 🧠 AI Cardiovascular Risk Prediction
+
+- Machine learning-powered disease risk estimation
+- Probability-based prediction scores
+- Health parameter analysis
+- AI-generated risk explanations
+- Clinical-style output visualization
+
+
+## 📊 Interactive Health Dashboard
+
+Features include:
+
+- Cardiovascular risk overview
+- Prediction results visualization
+- Patient health insights
+- Analytics dashboard
+- Structured medical interpretation
+
+
+## 📄 Automated Medical Reports
+
+The platform can generate:
+
+- Patient summary reports
+- Risk assessment reports
+- Prediction explanations
+- Downloadable PDF documents
+
+
+## 🌐 Production Deployment
+
+The application is deployed using:
+
+- Frontend → Vercel
+- Backend → Render
+- Version Control → GitHub
+
+The architecture supports real users accessing the application from any device.
+
+---
+
+# 🏗️ System Architecture
+
 ```
-The database will mount volume paths to protect diagnostics data.
+                         USER
+                          |
+                          |
+                          ↓
+              React + Vite Frontend
+                    (Vercel)
+                          |
+                          |
+                    REST API
+                          |
+                          ↓
+                FastAPI Backend
+                   (Render)
+                          |
+          --------------------------------
+          |                              |
+          ↓                              ↓
+ Machine Learning Model              Database
+          |
+          ↓
+ Cardiovascular Risk Prediction
+          |
+          ↓
+ Clinical Explanation + Reports
+```
 
 ---
 
-## 3. Running Verification Tests
-Execute the isolated testing suite to verify logins, refreshed tokens, and SHAP diagnostics:
-```bash
-pytest tests/
+# 🛠️ Technology Stack
+
+## Frontend
+
+- React
+- Vite
+- JavaScript
+- Axios
+- HTML/CSS
+- Responsive UI Design
+
+
+## Backend
+
+- Python
+- FastAPI
+- Uvicorn
+- JWT Authentication
+- SQLAlchemy
+- REST API Architecture
+
+
+## Machine Learning
+
+- Scikit-learn
+- NumPy
+- Pandas
+- Matplotlib
+- Trained ML Models
+
+
+## Database
+
+- SQLite (Development)
+- Database-driven user management
+- User-specific data storage
+
+
+## Deployment
+
+- GitHub
+- Vercel
+- Render
+- Docker Support
+
+---
+
+# 📂 Project Structure
+
 ```
-For deep design specs, tables layout, and deployment guides, check the [Technical Architecture Manual](file:///c:/Users/NITHISHH%20CM/Desktop/heart-disease-predictor%20-%20Copy/docs/architecture.md).
+heart-disease-predictor/
+
+│
+├── app/
+│   ├── main.py
+│   ├── routers/
+│   ├── services/
+│   └── API logic
+│
+├── frontend/
+│   ├── src/
+│   ├── components/
+│   ├── api.js
+│   ├── package.json
+│   └── Vite configuration
+│
+├── models/
+│   └── Machine learning models
+│
+├── data/
+│   └── Dataset files
+│
+├── reports_cache/
+│   └── Generated reports
+│
+├── plots/
+│   └── Visualization outputs
+│
+├── tests/
+│   └── Testing files
+│
+├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
+└── README.md
+```
+
+---
+
+# ⚙️ Local Installation
+
+## 1. Clone Repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/heart-disease-predictor.git
+
+cd heart-disease-predictor
+```
+
+---
+
+# Backend Setup
+
+Create virtual environment:
+
+```bash
+python -m venv venv
+```
+
+Activate environment:
+
+### Windows
+
+```bash
+venv\Scripts\activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run backend:
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Backend will run at:
+
+```
+http://localhost:8000
+```
+
+API Documentation:
+
+```
+http://localhost:8000/docs
+```
+
+---
+
+# Frontend Setup
+
+Navigate to frontend:
+
+```bash
+cd frontend
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create environment file:
+
+```
+.env
+```
+
+Add:
+
+```
+VITE_API_URL=http://localhost:8000
+```
+
+Start frontend:
+
+```bash
+npm run dev
+```
+
+Frontend will run at:
+
+```
+http://localhost:5173
+```
+
+---
+
+# 🔌 API Endpoints
+
+| Endpoint | Method | Purpose |
+|---|---|---|
+| `/` | GET | Backend status |
+| `/register` | POST | Create user account |
+| `/login` | POST | User authentication |
+| `/predict` | POST | Cardiovascular prediction |
+| `/health` | GET | Health monitoring |
+| `/report/pdf` | POST | Generate PDF report |
+| `/docs` | GET | Swagger API documentation |
+
+---
+
+# 🧬 Machine Learning Pipeline
+
+```
+Dataset
+   |
+   ↓
+Data Cleaning
+   |
+   ↓
+Feature Processing
+   |
+   ↓
+Model Training
+   |
+   ↓
+Model Evaluation
+   |
+   ↓
+Saved Model
+   |
+   ↓
+FastAPI Inference Engine
+   |
+   ↓
+Frontend Risk Dashboard
+```
+
+---
+
+# 🔒 Security Implementation
+
+Implemented security features:
+
+- JWT authentication
+- Password protection
+- Secure API communication
+- Environment variable configuration
+- CORS configuration
+- User data separation
+
+---
+
+# 🚀 Deployment Architecture
+
+```
+GitHub Repository
+        |
+        |
+        ↓
+     Vercel
+        |
+        |
+ React Frontend
+        |
+        |
+        ↓
+     Render
+        |
+        |
+ FastAPI Backend
+        |
+        |
+ ML Inference Engine
+```
+
+---
+
+# 📈 Future Improvements
+
+Planned upgrades:
+
+- PostgreSQL production database
+- SHAP-based Explainable AI
+- Doctor monitoring dashboard
+- Real-time health monitoring
+- Mobile application
+- Advanced ML model comparison
+- Cloud model monitoring
+- Automated CI/CD pipeline
+
+---
+
+# 🎯 Project Goals
+
+NeuroHeart AI demonstrates:
+
+✅ Full-stack AI development  
+✅ Machine Learning deployment  
+✅ Cloud deployment  
+✅ API engineering  
+✅ Authentication systems  
+✅ Healthcare AI applications  
+
+
+---
+
+# 👨‍💻 Author
+
+## CM Nithishh
+
+B.Tech Artificial Intelligence and Machine Learning
+
+---
+
+# ⭐ Acknowledgement
+
+This project was developed as an exploration of applied Artificial Intelligence in healthcare, combining machine learning, software engineering, and cloud deployment practices.
+
+---
+
+⭐ If you find this project interesting, consider starring the repository.
