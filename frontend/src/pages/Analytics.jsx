@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Activity, Users, BrainCircuit, Heart, Cpu, HardDrive, Timer } from 'lucide-react';
-import api from '../utils/api';
+import api, { classifyError } from '../utils/api';
 import { TableSkeleton } from '../components/Skeletons';
 import { TrendTimeline } from '../components/MedicalCharts';
 
@@ -16,7 +16,7 @@ const Analytics = () => {
         const res = await api.get('/analytics');
         setStats(res.data);
       } catch (err) {
-        setError(err.response?.data?.detail || 'Failed to load analytics platform data.');
+        setError(classifyError(err));
       } finally {
         setLoading(false);
       }

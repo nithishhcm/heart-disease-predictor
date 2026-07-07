@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Settings as SettingsIcon, Shield, Bell, Eye, EyeOff, Layout, History, Clock } from 'lucide-react';
-import api from '../utils/api';
+import api, { classifyError } from '../utils/api';
 import { FormSkeleton } from '../components/Skeletons';
 import NotificationToast from '../components/NotificationToast';
 

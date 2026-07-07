@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Activity, Mail, Lock, User as UserIcon, AlertCircle, CheckCircle } from 'lucide-react';
-import api from '../utils/api';
+import api, { classifyError } from '../utils/api';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -52,20 +52,6 @@ const Register = () => {
       navigate('/dashboard');
 
     } catch (err) {
-      // No response at all = server not running
-      if (!err.response) {
-        setError('Cannot reach the server. Please try again later.');
-        setLoading(false);
-        return;
-      }
-
-      // 5xx = server crashed
-      if (err.response.status >= 500) {
-        setError(`Server error (${err.response.status}). Check the backend terminal for details.`);
-        setLoading(false);
-        return;
-      }
-
       const detail = err.response?.data?.detail;
 
       // Username or email already taken → redirect to login
@@ -77,7 +63,8 @@ const Register = () => {
         setError(`${detail} — redirecting you to login…`);
         setTimeout(() => navigate('/login'), 2000);
       } else {
-        setError(typeof detail === 'string' ? detail : JSON.stringify(detail) || 'Registration failed.');
+        // Use the classified error helper for meaningful messages
+        setError(classifyError(err));
       }
     } finally {
       setLoading(false);

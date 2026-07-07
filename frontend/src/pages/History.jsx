@@ -4,7 +4,7 @@ import {
   History as HistoryIcon, Activity, AlertTriangle, CheckCircle, 
   Trash2, Download, Eye, FileText, ChevronLeft, ChevronRight, Search 
 } from 'lucide-react';
-import api from '../utils/api';
+import api, { classifyError } from '../utils/api';
 import { TableSkeleton } from '../components/Skeletons';
 import NotificationToast from '../components/NotificationToast';
 
@@ -42,7 +42,7 @@ const History = () => {
       });
       setHistory(res.data);
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to retrieve diagnostic records.');
+      setError(classifyError(err));
     } finally {
       setLoading(false);
     }

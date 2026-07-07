@@ -5,7 +5,7 @@ import {
   CheckCircle, ArrowRight, Download, Printer, RefreshCw,
   Activity 
 } from 'lucide-react';
-import api from '../utils/api';
+import api, { classifyError } from '../utils/api';
 import WizardForm from '../components/WizardForm';
 import ECGHeartbeat from '../components/ECGHeartbeat';
 import { RiskGauge, FeatureBarChart, RadarChart } from '../components/MedicalCharts';
@@ -32,7 +32,7 @@ const Dashboard = () => {
       setFormData(data); // save state
       setToast({ message: 'Diagnostic check successfully generated.', type: 'success' });
     } catch (err) {
-      setToast({ message: err.response?.data?.detail || 'Inference analysis failed.', type: 'error' });
+      setToast({ message: classifyError(err), type: 'error' });
     } finally {
       setLoading(false);
     }

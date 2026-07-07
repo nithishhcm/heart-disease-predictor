@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Activity, Lock, User as UserIcon } from 'lucide-react';
-import api from '../utils/api';
+import api, { classifyError } from '../utils/api';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ const Login = () => {
       localStorage.setItem('token', res.data.access_token);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.detail || 'Authentication failed');
+      setError(err.response?.data?.detail || classifyError(err));
     } finally {
       setLoading(false);
     }
