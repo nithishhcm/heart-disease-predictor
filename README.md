@@ -8,6 +8,13 @@
 ![Machine Learning](https://img.shields.io/badge/Machine-Learning-orange)
 
 ---
+## DEMO
+
+
+https://github.com/user-attachments/assets/4d680ad3-da39-445c-81d2-0599d40f9791
+
+
+
 
 ## 🌐 Live Application
 
