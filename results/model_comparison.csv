@@ -1,0 +1,5 @@
+Model,Accuracy,Precision,Recall,F1 Score,ROC AUC,CV Accuracy,Training Time (s)
+Logistic Regression,0.8525,0.8519,0.8214,0.8364,0.9242,0.8426,0.0311
+Random Forest,0.8361,0.875,0.75,0.8077,0.921,0.8181,1.3485
+XGBoost,0.8361,0.8462,0.7857,0.8148,0.8874,0.8059,0.5708
+Decision Tree,0.7213,0.72,0.6429,0.6792,0.7154,0.7645,0.0244
