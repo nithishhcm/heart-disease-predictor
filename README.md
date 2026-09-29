@@ -132,7 +132,7 @@ The architecture supports real users accessing the application from any device.
 
 ---
 
-# 🛠️ Technology Stack
+# 🛠️ Technology Stac
 
 ## Frontend
 
